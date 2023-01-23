@@ -1,0 +1,135 @@
+stages:
+    - build
+    - deploy
+    - zenodo
+
+# Build STL files
+build:
+    stage: build
+    image: ubuntu:18.04
+
+    before_script:
+      - apt-get update -qq
+      - apt-get -y -qq install software-properties-common dirmngr apt-transport-https lsb-release ca-certificates python3-pip
+      - add-apt-repository -y ppa:openscad/releases
+      - apt-get update -qq
+      - apt-get install -y -qq openscad git
+      - pip3 install -r requirements.txt
+
+    script:
+      - git clone --depth=1 https://gitlab.com/openflexure/openflexure-microscope-extra
+      # Build STL files with OpenSCAD
+      - mkdir -p /root/.local/share
+      - ./build.py --generate-stl-options-json --include-extra-files
+
+    artifacts:
+      expire_in: 1 week
+      name: "${CI_PROJECT_NAME}-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}"
+      paths:
+        - builds/*.stl
+        - builds/*.json
+
+    only:
+      - tags
+      - merge_requests
+      - web
+
+
+# Build docs
+build-docs:
+    stage: build
+    image: ubuntu:18.04
+
+    before_script:
+      - apt-get update -qq
+      - apt-get -y -qq install software-properties-common
+      - apt-get -y -qq install git git-lfs
+
+    script:
+      # Build documentation
+      # TODO: Implement git-building to render .md to .html
+      - git lfs install
+      - git config --local lfs.fetchexclude "/docs/original_images,/design_files"
+      - git lfs fetch
+      - git lfs checkout
+
+      - python3 ./build_docs.py
+
+    artifacts:
+      expire_in: 1 week
+      name: "${CI_PROJECT_NAME}-${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}-docs"
+      paths:
+        - builds/
+
+    only:
+      - tags
+      - merge_requests
+      - web
+
+
+# Deploy to builds.openflexure.org
+deploy:
+  stage: deploy
+  dependencies:
+    - build
+    - build-docs
+  image: ubuntu:latest
+
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY_BATH_OPENFLEXURE_BASE64" | base64 --decode)
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+
+  script:
+    # Install rsync if not already installed
+    - 'which rsync || ( apt-get update -y && apt-get install rsync -y )'
+
+    # Upload the builds folder to openflexure-microscope builds
+    - rsync -hrvz -e ssh builds/ ci-user@openflexure.bath.ac.uk:/var/www/build/openflexure-microscope/${CI_COMMIT_REF_NAME} --delete
+
+    # Zip the builds folder and upload it to the openflexure-microscope build root
+    - 'which zip || ( apt-get update -y && apt-get install zip -y )'
+    - (cd builds && zip -r "../${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}.zip" .)
+    - rsync -hrvz -e ssh "${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}.zip" ci-user@openflexure.bath.ac.uk:/var/www/build/openflexure-microscope/
+
+    # Run update-latest.py on the build server
+    - ssh -t ci-user@openflexure.bath.ac.uk "/var/www/build/update-latest.py"
+
+  artifacts:
+    expire_in: 1 week
+    name: "${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}.zip"
+    paths:
+      - "${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}.zip"
+
+  only:
+    - tags
+    - web
+
+
+zenodo:
+  stage: zenodo
+  image: ubuntu:18.04
+  dependencies:
+    - deploy
+  before_script:
+    - apt-get update -qq
+    - apt-get -y -qq install git python3-pip
+    - pip3 install -r scripts/zenodo/requirements.txt
+  variables:
+    ZENODO_USE_SANDBOX: "false"
+  script:
+    - mv "${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}.zip" "${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}-outputs.zip"
+    - git archive "${CI_COMMIT_REF_NAME}" --format=zip --output="${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}-source.zip"
+    - python3 scripts/zenodo/upload_to_zenodo.py "${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}-source.zip" "${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}-outputs.zip"
+  artifacts:
+    # this is only a small html link, let's just keep it forever
+    # gitlab doesn't understand "expire_in: never" yet though
+    expire_in: 100000 years
+    name: zenodo-${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}-link.html
+    paths:
+      - zenodo-link.html
+  only:
+    - tags
+    - web

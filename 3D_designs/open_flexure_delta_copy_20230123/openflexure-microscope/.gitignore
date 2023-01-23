@@ -1,0 +1,36 @@
+# Don't take stl files
+*.stl
+
+# Ignore gcode files
+*.g
+*.gcode
+
+# Ignore VIM swap files
+*.swp
+
+# Ignore zip files in the documentation dir
+docs/*.zip
+
+# Ignore automatically built files
+Makefile
+builds/
+docs/Output/
+*.stl.d
+ninja.build
+build.ninja
+.ninja_deps
+.ninja_log
+
+# Ignore IDE files
+.vscode/
+
+.DS_Store
+
+# Kate files
+*.backup
+
+# Python virtualenvironment
+.venv/
+
+# Python cache
+__pycache__

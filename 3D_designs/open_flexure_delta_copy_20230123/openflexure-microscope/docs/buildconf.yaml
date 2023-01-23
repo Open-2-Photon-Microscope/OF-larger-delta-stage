@@ -1,0 +1,12 @@
+OverviewPage: index.md
+
+CustomCategories:
+    PrintedPart:
+        Reuse: false
+    PrintedTool:
+        Reuse: true
+
+DefaultCategory: Part
+
+#uncomment line below to disable fussy warnings
+#Fussy: False
