@@ -365,9 +365,7 @@ module main_body(){
 brim_radius = 3;
 
 exterior_brim(r=brim_radius) {
-        translate([0,0,70+magnet_h-tol]){
-        magnet_hole();
-        }
+
     difference(){
     translate([0,0,0]){
 
