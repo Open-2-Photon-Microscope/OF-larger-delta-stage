@@ -308,21 +308,25 @@ module legs(){
     } 
 }
 
+tol = 0.1;
+magnet_d = 5;
+magnet_h = 2;
 module magnet_hole(){
-translate([0,0,60]){
-tol=0.1;
+
+translate([0,0,0]){
+
 for(angle = [0 : 120 : 240]){
     rotate([0,0,angle]){
-        translate([0,-24.5,+1.1]){
-            cylinder(d=5+2*tol,h=4,$fn=30);
+        translate([0,-24.5,(magnet_h+tol)/2]){
+            cylinder(d=magnet_d+tol,h=magnet_h+tol,$fn=30);
         }//end rotate
     }//end translate
 }//end for
 
 for(angle = [0 : 120 : 240]){
     rotate([0,0,angle]){
-        translate([0,22,+1.1]){
-            cylinder(d=5+2*tol,h=4,$fn=30);
+        translate([0,22,(magnet_h+tol)/2]){
+            cylinder(d=magnet_d+tol,h=magnet_h+tol,$fn=30);
         }//end rotate
     }//end translate
 }//end for
@@ -361,13 +365,16 @@ module main_body(){
 brim_radius = 3;
 
 exterior_brim(r=brim_radius) {
+        translate([0,0,70+magnet_h-tol]){
+        magnet_hole();
+        }
     difference(){
     translate([0,0,0]){
 
 
     main_body();
     }
-    translate([0,0,10]){
+    translate([0,0,70+magnet_h-tol]){
         magnet_hole();
         }
     }//end difference
@@ -384,17 +391,15 @@ module thick_section(h, z=0, center=false){
 //echo("Radius of mounting holes is", mounting_hole_r);
 
 
-/*
 
 translate([100,100,-70]){
 
 
 difference(){
 moving_stage();
-    translate([0,0,9.8]){
+    translate([0,0,70+magnet_h-tol]){
         magnet_hole();
     }//end translate
     
 }//end transalate
 }//end difference
-*/
