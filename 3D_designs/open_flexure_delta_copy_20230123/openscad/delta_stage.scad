@@ -16,6 +16,8 @@ use <../openflexure-microscope/openscad/z_axis.scad>;
 use <../openflexure-microscope/openscad/illumination.scad>;
 use <../openflexure-microscope/openscad/logo.scad>;
 
+use <../../sample_holders/holders.scad>
+
 module lever(){
     // The levers go from the centre to the actuator columns
     // We anchor to the y=0 plane.
@@ -363,7 +365,7 @@ module main_body(){
 }
 
 brim_radius = 3;
-
+/*
 exterior_brim(r=brim_radius) {
 
     difference(){
@@ -389,15 +391,20 @@ module thick_section(h, z=0, center=false){
 //echo("Radius of mounting holes is", mounting_hole_r);
 
 
+*/
 
-translate([100,100,-70]){
+union(){
+translate([100,100,75]){
 
-
+//translate([00,00,75]){
+rotate([0,180,0])
 difference(){
 moving_stage();
     translate([0,0,70+magnet_h-tol]){
         magnet_hole();
     }//end translate
     
-}//end transalate
 }//end difference
+}//end translate
+translate([100,100,5])mic_slide();
+}//end union
