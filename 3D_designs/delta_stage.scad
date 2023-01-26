@@ -363,20 +363,20 @@ module main_body(){
     if (transmission_illumination) condenser_mount();
 }
 
-brim_radius = 2;
+brim_radius = 3;
 
 exterior_brim(r=brim_radius) {
 
-    //difference(){
+    difference(){
     translate([0,0,0]){
 
 
     main_body();
     }
-    //translate([0,0,70+magnet_h-tol]){
-    //    magnet_hole();
-    //    }
-    //}//end difference
+    translate([0,0,70+magnet_h-tol]){
+        magnet_hole();
+        }//end translate
+    }//end difference
     
 }
 
