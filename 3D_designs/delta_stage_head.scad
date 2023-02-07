@@ -310,7 +310,7 @@ module legs(){
     } 
 }
 
-tol = 0.1;
+tol = 0.2;
 magnet_d = 5;
 magnet_h = 2;
 module magnet_hole(){

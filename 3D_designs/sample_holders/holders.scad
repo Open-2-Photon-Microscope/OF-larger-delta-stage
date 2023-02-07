@@ -1,7 +1,7 @@
 //models of the glass pieces used to hold samples
 // and respective holders
 
-tol = 0.1;
+tol = 0.2;
 $fn = 30;
 
 wall_t = 2;
