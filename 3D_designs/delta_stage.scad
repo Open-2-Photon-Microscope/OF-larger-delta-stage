@@ -16,6 +16,7 @@ use <./open_flexure_delta_copy_20230123/openflexure-microscope/openscad/z_axis.s
 use <./open_flexure_delta_copy_20230123/openflexure-microscope/openscad/illumination.scad>;
 use <./open_flexure_delta_copy_20230123/openflexure-microscope/openscad/logo.scad>;
 
+stage_connectors=1;
 
 module lever(){
     // The levers go from the centre to the actuator columns
@@ -385,6 +386,8 @@ module thick_section(h, z=0, center=false){
         translate([0,0,-z]) children();
     }
 } 
+
+
 
 // Best to put echo statements here, so they only happen once...
 //echo("Radius of mounting holes is", mounting_hole_r);
