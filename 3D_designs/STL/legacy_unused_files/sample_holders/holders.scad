@@ -38,4 +38,4 @@ module mic_slide(){
 }//end difference
 }//end module
 
-//mic_slide();
+mic_slide();

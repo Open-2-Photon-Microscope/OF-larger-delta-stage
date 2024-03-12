@@ -6,6 +6,9 @@ This project aims to be a high-performance flexure stage, with
 long-ish travel in 3D.
 
 */
+
+//import ("thorlabs_bit.stl");
+
 include <parameters.scad> //Delta-stage params
 use <z_axis.scad>;
 use <delta_stage_logo.scad>;
@@ -16,6 +19,27 @@ use <../openflexure-microscope/openscad/z_axis.scad>;
 use <../openflexure-microscope/openscad/illumination.scad>;
 use <../openflexure-microscope/openscad/logo.scad>;
 
+//OPEN 2PHOTON FILES:
+use <O2P_design/thorlabs_base.scad>; // cage holders
+use <O2P_design/thorlabs_holders.scad>; // table holders
+use <O2P_design/magnet_holes.scad>; // magnet holes
+use <O2P_design/top_stage.scad>; // top stage holder
+
+
+
+
+//Objective mount - the dovetail for attaching the optics module
+optics_module_mount = false;
+
+// Stage connectors - the mounts to connect the stage to the base
+stage_connectors = false;
+
+
+//Casing 
+casing_height = actuator_h+actuator_travel + 5; //flex_z2-24; //the maximum height of the lever casing and 'joining together' casing
+casing_radius = nut_y+26.5; //the outside radius (to the point) of the hexagon used to join the casing together
+
+stage_r = 40; // distance from the centre to the edge of the stage
 module lever(){
     // The levers go from the centre to the actuator columns
     // We anchor to the y=0 plane.
@@ -334,10 +358,13 @@ module main_body(){
     if (transmission_illumination) condenser_mount();
 }
 
-brim_radius = 0;
+brim_radius = 3;
 
 exterior_brim(r=brim_radius) {
-    main_body();
+    difference(){
+        main_body();
+        translate([0,0,sample_z+8])magnet_holes(32);
+    }// end difference
 }
 
 module thick_section(h, z=0, center=false){
@@ -348,3 +375,9 @@ module thick_section(h, z=0, center=false){
 
 // Best to put echo statements here, so they only happen once...
 //echo("Radius of mounting holes is", mounting_hole_r);
+
+triple(22+stage_r); //outside holders for attach to table
+cage_adapter(); // inside holders for cage and lens
+
+//cube([52,52,10], center=true); //lens size test
+//translate([0,0,70])topper();

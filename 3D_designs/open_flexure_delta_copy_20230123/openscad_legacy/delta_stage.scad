@@ -16,6 +16,8 @@ use <../openflexure-microscope/openscad/z_axis.scad>;
 use <../openflexure-microscope/openscad/illumination.scad>;
 use <../openflexure-microscope/openscad/logo.scad>;
 
+use <../../sample_holders/holders.scad>
+
 module lever(){
     // The levers go from the centre to the actuator columns
     // We anchor to the y=0 plane.
@@ -130,7 +132,7 @@ module stage_edges(h=5-2*dz, z=flex_z2+2*dz){
 
 module stage_mounting_holes(z_translate=0){
     //Generate all the mounting holes for the stage
-    each_stage_mounting_hole(z_translate) trylinder_selftap(3,h=999);
+    each_stage_mounting_hole(z_translate) trylinder_selftap(3,h=500);
 }
 
 module each_stage_mounting_hole(z_translate =0){
@@ -308,6 +310,32 @@ module legs(){
     } 
 }
 
+tol = 0.1;
+magnet_d = 5;
+magnet_h = 2;
+module magnet_hole(){
+
+translate([0,0,0]){
+
+for(angle = [0 : 120 : 240]){
+    rotate([0,0,angle]){
+        translate([0,-24.5,(magnet_h+tol)/2]){
+            cylinder(d=magnet_d+tol,h=magnet_h+tol,$fn=30);
+        }//end rotate
+    }//end translate
+}//end for
+
+for(angle = [0 : 120 : 240]){
+    rotate([0,0,angle]){
+        translate([0,22,(magnet_h+tol)/2]){
+            cylinder(d=magnet_d+tol,h=magnet_h+tol,$fn=30);
+        }//end rotate
+    }//end translate
+}//end for
+}//end translate
+}//end module
+
+
 module base_mounting_points(){
 // The supports attached to each leg that slot into the base.
     each_base_mounting_point(){
@@ -329,15 +357,28 @@ module base_mounting_points(){
 
 module main_body(){
     legs();
+        
     moving_stage();
+
     casing();
     if (transmission_illumination) condenser_mount();
 }
 
-brim_radius = 0;
-
+brim_radius = 3;
+/*
 exterior_brim(r=brim_radius) {
+
+    difference(){
+    translate([0,0,0]){
+
+
     main_body();
+    }
+    translate([0,0,70+magnet_h-tol]){
+        magnet_hole();
+        }
+    }//end difference
+    
 }
 
 module thick_section(h, z=0, center=false){
@@ -348,3 +389,23 @@ module thick_section(h, z=0, center=false){
 
 // Best to put echo statements here, so they only happen once...
 //echo("Radius of mounting holes is", mounting_hole_r);
+
+
+*/
+
+union(){
+translate([100,100,75]){
+
+//translate([00,00,75]){
+rotate([0,180,0])
+difference(){
+moving_stage();
+    translate([0,0,70+magnet_h-tol]){
+        magnet_hole();
+    }//end translate
+    
+}//end difference
+}//end translate
+translate([100,100,5])mic_slide();
+}//end union
+L
