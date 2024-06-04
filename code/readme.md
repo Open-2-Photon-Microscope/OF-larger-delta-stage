@@ -9,13 +9,13 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-	<a href="#Testing_overview">Protocols used</a>
+	<a href="#protocols-used">Protocols used</a>
 	 <ul>
-        <li><a href="#XY_analysis_protocol">XY translation protocol</a></li>
-        <li><a href="#Drift_protocol">Long term drift protocol</a></li>
+        <li><a href="#xy-translation-protocol">XY translation protocol</a></li>
+        <li><a href="#long-term-drift-protocol">Long term drift protocol</a></li>
       </ul>
     <li>
-      <a href="#Code">Code usage</a>
+      <a href="#code-usage">Code usage</a>
     </li>
       </ul>
     </li>
