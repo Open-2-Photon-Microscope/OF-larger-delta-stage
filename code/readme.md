@@ -45,6 +45,8 @@ Analysis : cross correlation
 * Forward movement : When moving in X or Y, or XY, compare the input distance with the recorded displacement 
 * Backward movement : When going back to 0 after a translation, is the original 0 matching ?
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- Long term drift protocol-->
 ### Long term drift protocol
 
@@ -82,12 +84,16 @@ The parameter "slice_nbr = 200" should be adapted to match the number of slices 
 and is used to explude images that are erroneous (i.e. not enough slices).
 It saves the data in a .csv coordinate table.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 2. Apply  Z projection and ehance images contrast on raw stack.tiff files with script S2:
 * code/S2_Z_projection_and_contrast_enhancement.py (using code/Function_2_Z_projection.py)
 
 From the previously created .csv coordinate table, reads each relevant image and averages all slices in the stack.
 It outputs the projected images as .tiff with normalised and stretched intensity to increase contrast.
 It also produces a new .csv table containing the same data as in 1- but with image path updated to the matching Z projected image.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 3. Compute a rigid transformation by phase cross correlation (i.e. without depth, only scale + translation + eventually rotation) using the appropriate S3 script :
 * code/S3_Align_with_skimage_cross_correlation_XY_analysis.py (using code/Function_3_Phase_cross_correlation_skimage_XY_analysis.py)
@@ -106,6 +112,7 @@ Example of transformation at a single point across 120 min :
 
 ![001_Y_positive_drift](https://github.com/Open-2-Photon-Microscope/OF-larger-delta-stage/assets/83412687/f5af734c-3b2a-4741-b056-f839e9fcdbbf)
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 4. Create graphs of the results using the script S4 corresponding to the required analysis :
 * code/S4_Cross_correlation_graphs_XY_analysis.py
@@ -124,3 +131,4 @@ Examples of analysis for XY translation :
 
 ![Protocol_1_Going_back_to_Zero_translation_error](https://github.com/Open-2-Photon-Microscope/OF-larger-delta-stage/assets/83412687/8fada742-8c01-4391-a916-a8fcf7927c4b)
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
