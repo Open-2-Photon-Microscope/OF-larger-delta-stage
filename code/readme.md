@@ -74,8 +74,8 @@ and small errors in ID numbering shouldn't affect the code (for e.g. ID duplicat
 Scripts should be run as follow : 
 
 1. Extract the coordinates of each raw image (from file name). This is done using the appropriate S1 script for each analysis :
-* code/S1_Get_table_of_coordinates_XY_analysis.py
-* code/S1_Get_table_of_coordinates_long_term_drift.py
+* [S1_Get_table_of_coordinates_XY_analysis](code/S1_Get_table_of_coordinates_XY_analysis.py)
+* [S1_Get_table_of_coordinates_long_term_drift](code/S1_Get_table_of_coordinates_long_term_drift.py)
 
 This extracts the raw image path, image ID, X, Y and Z theoretical location and time when relevant.
 For XY analysis, it also detects the nearest files at location (0;0;0), taken before and after the image of interest (relies on accurate ID numbering)
@@ -87,7 +87,7 @@ It saves the data in a .csv coordinate table.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 2. Apply  Z projection and ehance images contrast on raw stack.tiff files with script S2:
-* code/S2_Z_projection_and_contrast_enhancement.py (using code/Function_2_Z_projection.py)
+* [S2_Z_projection_and_contrast_enhancement](code/S2_Z_projection_and_contrast_enhancement.py) (using [Function_2_Z_projection](code/Function_2_Z_projection.py))
 
 From the previously created .csv coordinate table, reads each relevant image and averages all slices in the stack.
 It outputs the projected images as .tiff with normalised and stretched intensity to increase contrast.
@@ -96,8 +96,8 @@ It also produces a new .csv table containing the same data as in 1- but with ima
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 3. Compute a rigid transformation by phase cross correlation (i.e. without depth, only scale + translation + eventually rotation) using the appropriate S3 script :
-* code/S3_Align_with_skimage_cross_correlation_XY_analysis.py (using code/Function_3_Phase_cross_correlation_skimage_XY_analysis.py)
-* code/S3_Align_with_skimage_cross_correlation_long_term_drift.py (using code/Function_3_Phase_cross_correlation_skimage_long_term_drift.py)
+* [S3_Align_with_skimage_cross_correlation_XY_analysis](code/S3_Align_with_skimage_cross_correlation_XY_analysis.py) (using [Function_3_Phase_cross_correlation_skimage_XY_analysis](code/Function_3_Phase_cross_correlation_skimage_XY_analysis.py))
+* [S3_Align_with_skimage_cross_correlation_long_term_drift](code/S3_Align_with_skimage_cross_correlation_long_term_drift.py) (using [Function_3_Phase_cross_correlation_skimage_long_term_drift](code/Function_3_Phase_cross_correlation_skimage_long_term_drift.py))
 
 For details on the cross correlation see https://scikit-image.org/docs/stable/auto_examples/registration/plot_register_translation.html
 
@@ -115,8 +115,8 @@ Example of transformation at a single point across 120 min :
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 4. Create graphs of the results using the script S4 corresponding to the required analysis :
-* code/S4_Cross_correlation_graphs_XY_analysis.py
-* code/S4_Cross_correlation_graphs_long_term_drift.py
+* [S4_Cross_correlation_graphs_XY_analysis](code/S4_Cross_correlation_graphs_XY_analysis.py)
+* [S4_Cross_correlation_graphs_long_term_drift](code/S4_Cross_correlation_graphs_long_term_drift.py)
 
 Examples of analysis for XY translation :
 * Absolute error in both axis for single X or Y translations :
