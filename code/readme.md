@@ -74,8 +74,8 @@ and small errors in ID numbering shouldn't affect the code (for e.g. ID duplicat
 Scripts should be run as follow : 
 
 1. Extract the coordinates of each raw image (from file name). This is done using the appropriate S1 script for each analysis :
-* [S1_Get_table_of_coordinates_XY_analysis](OF-larger-delta-stage/code/S1_Get_table_of_coordinates_XY_analysis.py)
-* [S1_Get_table_of_coordinates_long_term_drift](code/S1_Get_table_of_coordinates_long_term_drift.py)
+* [S1_Get_table_of_coordinates_XY_analysis](S1_Get_table_of_coordinates_XY_analysis.py)
+* [S1_Get_table_of_coordinates_long_term_drift](S1_Get_table_of_coordinates_long_term_drift.py)
 
 This extracts the raw image path, image ID, X, Y and Z theoretical location and time when relevant.
 For XY analysis, it also detects the nearest files at location (0;0;0), taken before and after the image of interest (relies on accurate ID numbering)
