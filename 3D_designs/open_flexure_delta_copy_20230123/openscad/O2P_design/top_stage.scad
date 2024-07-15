@@ -53,7 +53,7 @@ module slide_holder_top(){
         translate([0,0,-2])magnet_holes(32);
     } // end difference
 }// end translate
-    translate([0,0,1])mic_slide();
+    translate([0,15,1])mic_slide(); // offset Y may be useful
 }// end module slide_holder_top
 
 slide_holder_top();

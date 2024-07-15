@@ -62,25 +62,25 @@ module calibration_top(){
         translate([0,0,-2])cylinder(h=4,r=40,center=true,$fn=6);
         union(){
             translate([0,0,-2])magnet_holes(32);
-            holes(15.24,4,10,3.1);
+            holes(15,4,10,3.3);
             //translate([0,0,-3]){rotate([0,0,45])holes(15,4,2,5.6);}
-            rotate([0,0,45])holes(15,4,10,3.3); // screw holes
+            rotate([0,0,45])holes(15,4,10,3.5); // screw holes
             rotate([0,0,45])cube([20,20,6.2],center=true);
         }// end union
     } // end difference
 }// end translation
 
-}// end calibration module
+}// end calibration_top module
 
 
-module top_cap(){
+module top_cap(){ // has slits and screw holes only
     slit_thickness = 0.2;  //changed from 1mm
     difference(){
         translate([0,0,-2.5])cylinder(h=5,r=40, center=true, $fn=6);
         difference(){
         union(){
-            translate([0,0,-1]){rotate([0,0,45])holes(15,4,2,5.6);
-            rotate([0,0,45])holes(15,4,10,3);}//end translate
+            translate([0,0,-1.5]){rotate([0,0,45])holes(15,4,3,6);
+            rotate([0,0,45])holes(15,4,10,3.5);}//end translate
             translate([0,0,-2.5])cube([slit_thickness,40,10],center=true);
             translate([0,0,-2.5])cube([40,slit_thickness,10],center=true);
         }// end union
