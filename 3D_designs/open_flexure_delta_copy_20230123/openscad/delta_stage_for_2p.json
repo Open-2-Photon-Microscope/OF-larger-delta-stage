@@ -1,0 +1,10 @@
+{
+    "parameterSets": {
+        "design default values": {
+            "optics_module_mount": "false",
+            "stage_connectors": "false",
+            "stage_r": "40"
+        }
+    },
+    "fileFormatVersion": "1"
+}

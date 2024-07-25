@@ -26,6 +26,7 @@ rotate([0,0,60])union(){
     rotate([0,0,120])translate([0,-73.5,-20])archway(50,50,40,20);
     rotate([0,0,-120])translate([0,-73.5,-20])archway(50,50,40,20);
 }// end union
+translate([0,0,-1])holes(71, 6, 2.2, 3.3);
 }// end difference
 translate([0,0,2.5-height])intersection(){
     cylinder(h=5,r=73.5,center=true,$fn=6);
@@ -97,5 +98,7 @@ union(){
 }//end union
 }// end module full_top
 
-//calibration_body();
-full_top();
+
+calibration_body();
+
+//full_top();
