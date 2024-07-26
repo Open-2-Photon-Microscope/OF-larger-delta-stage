@@ -25,8 +25,6 @@ use <O2P_design/thorlabs_holders.scad>; // table holders
 use <O2P_design/magnet_holes.scad>; // magnet holes
 use <O2P_design/top_stage.scad>; // top stage holder
 
-use <O2P_design/stage_calibration.scad>; // calibration file includes better mag holes
-
 
 
 
@@ -366,7 +364,6 @@ exterior_brim(r=brim_radius) {
     difference(){
         main_body();
         translate([0,0,sample_z+8])magnet_holes(32);
-        translate([0,0,39])holes(71, 6, 2.2, 3.3);
     }// end difference
 }
 
