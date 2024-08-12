@@ -92,13 +92,16 @@ module top_cap(){ // has slits and screw holes only
 
 
 module full_top(){
+difference(){
 union(){
     translate([0,0,5])top_cap();
     calibration_top();
 }//end union
+    translate([10,20,-15])cube([2,50,30]);
+}//end difference
 }// end module full_top
 
 
-calibration_body();
+//calibration_body();
 
-//full_top();
+full_top();
