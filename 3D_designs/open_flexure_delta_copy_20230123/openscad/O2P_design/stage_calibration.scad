@@ -14,7 +14,7 @@ module archway(x,y,z, down){
 
 //archway(50,60,40,20);
 
-module calibration_body(){
+module calibration_body(slit=1){
     height = 55;
 difference(){
 union(){
@@ -36,15 +36,15 @@ translate([0,0,2.5-height])intersection(){
             cube([150,10,5], center=true);
         } // end union
         union(){
-            cube([1,150,5],center=true);
-            cube([150,1,5], center=true);
+            cube([slit,150,5],center=true);
+            cube([150,slit,5], center=true);
         } // end union
     }// end difference
 }// end intersection
 
 }// end module calibration_body
 
-calibration_body();
+calibration_body(0.5);
 
 module holes(radius, number, height, hole_width){
     for(i=[0:360/number:360]){
