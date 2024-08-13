@@ -19,7 +19,7 @@ module calibration_body(){
 difference(){
 union(){
     hexagon(73.5,height,5);
-translate([0,0,-10])triple_slant(62);
+//translate([0,0,-10])triple_slant(62);
 } // end union
 rotate([0,0,60])union(){
     translate([0,-73.5,0-20])archway(50,50,40,20);
@@ -43,6 +43,8 @@ translate([0,0,2.5-height])intersection(){
 }// end intersection
 
 }// end module calibration_body
+
+calibration_body();
 
 module holes(radius, number, height, hole_width){
     for(i=[0:360/number:360]){
@@ -104,4 +106,4 @@ union(){
 
 //calibration_body();
 
-full_top();
+//full_top();
