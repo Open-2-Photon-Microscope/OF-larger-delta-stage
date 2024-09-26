@@ -22,7 +22,7 @@ from tkinter import Tk
 from tkinter.filedialog import askopenfilename  # User input interface
 
 # Import relevant functions from other scripts
-from Old_versions.Function_3_Phase_cross_correlation_skimage_old import cross_correlation_drift
+from Function_3_Phase_cross_correlation_skimage_long_term_drift import cross_correlation_drift
 
 # Fixed variables
 px_size = 1/0.512
