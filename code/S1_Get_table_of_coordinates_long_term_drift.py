@@ -29,6 +29,7 @@ import skimage as ski
 
 # Get main path
 outer_dir = dirname(os.getcwd())
+outer_dir = '/home/marcus1/Documents/data_collection/tiff_20-09-2024' ##REMOVE 
 # Ask user the path to the raw data (stack .tiff files)
 root = Tk()
 root.attributes("-topmost", True)
@@ -41,7 +42,7 @@ output_path = outer_dir + "/Data"
 os.makedirs(output_path, exist_ok=True)  # exist_ok set to true to not raise an error if the folder exists
 
 # Set fixed variables
-slice_nbr = 200
+slice_nbr = 0
 
 # Find all stack .tiff in the selected directory
 path = stack_path + '/**/*.tiff'
@@ -64,16 +65,18 @@ for i in range(0, nbr_files):
     # Open image and extract stack size
     im = ski.io.imread(stack_files[i], dtype=np.uint16)
     # check stack is 200 slices
-    if im.shape[0] == slice_nbr:
+    if im.shape[2] >= slice_nbr:
         print('Correct slide number in file')
-        slice_nbr = im.shape[0]
+        slice_nbr = im.shape[2]
 
         # get path and ID
         image_full_path = stack_files[i]
         image_name = os.path.splitext(os.path.basename(stack_files[i]))[0]
         print(image_name)
         image_id = image_name.split('_')[0].zfill(3)
-        protocol = '_'.join(image_full_path.split('\\')[1].split(' ')[0:2])
+        #protocol = '_'.join(image_full_path.split('\\')[1].split(' ')[0:2])
+        protocol = 'needs fixing'
+
 
         # get x , y and z values
         coordinate_string = image_name.replace(image_id + "_", "").replace("_", "")

@@ -2,6 +2,7 @@
 // Aligner to be used in conjunction with alignment card
 use <magnet_holes.scad>
 use <holders.scad>
+use <chamber.scad>
 
 module hexagon(radius,height,thickness){
     translate([0,0,-0.5*height])difference(){
@@ -56,4 +57,30 @@ module slide_holder_top(){
     translate([0,15,1])mic_slide(); // offset Y may be useful
 }// end module slide_holder_top
 
-slide_holder_top();
+//slide_holder_top();
+
+module ch_hold(){
+    difference(){
+        translate([0,0,-0.5])cube([28,58,4],center=true);
+        scale(1.03)egg_chamber();
+        cube(14, center=true);
+    }//end difference
+}//end module ch_hold
+
+//ch_hold();
+
+module cham_holder_top(y_offset=0){
+    difference(){
+    translate([0,0,-4]){
+        rotate([180,0,0])difference(){
+        hexagon(40,4,6);
+        translate([0,0,-2])magnet_holes(32);
+    } // end difference
+}// end translate
+translate([0,y_offset,-2]){rotate([0,0,90])cube([28,58,4],center=true);}
+}// another difference
+    translate([0,y_offset,-1.5]){rotate([0,0,90])ch_hold();} // offset Y may be useful
+}// end module cham_holder_top
+
+//cham_holder_top(15);
+cham_holder_top(0);

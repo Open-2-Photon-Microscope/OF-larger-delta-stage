@@ -5,6 +5,17 @@ use <holders.scad>
 use <thorlabs_holders.scad>
 use <top_stage.scad>
 
+module holes(radius, number, height, hole_width, fn=18){
+    for(i=[0:360/number:360]){
+        rotate([0,0,i]){
+        //echo(i);
+        translate([radius,0,0])cylinder(height,d = hole_width, center=true, $fn=fn);
+        }// end rotate
+    }// end for
+}// end module holes
+
+//holes(10, 6, 5, 1.5);
+
 module archway(x,y,z, down){
     intersection(){
         cube([x,y,z],center=true);
@@ -44,18 +55,7 @@ translate([0,0,2.5-height])intersection(){
 
 }// end module calibration_body
 
-calibration_body(0.5);
-
-module holes(radius, number, height, hole_width){
-    for(i=[0:360/number:360]){
-        rotate([0,0,i]){
-        //echo(i);
-        translate([radius,0,0])cylinder(height,d = hole_width, $fn=18, center=true);
-        }// end rotate
-    }// end for
-}// end module holes
-
-//holes(10, 6, 5, 1.5);
+//calibration_body(0.5);
 
 module calibration_top(){
     
@@ -107,3 +107,39 @@ union(){
 //calibration_body();
 
 //full_top();
+
+module custom_holder(){
+    difference(){
+    hull(){
+        cylinder(r=73.5,h=20, $fn=6);
+        cylinder(d=50, h=20);
+    }//end hull
+    cylinder(d=44,h=20, $fn=50);
+    
+        //translate([0,0,20]){rotate([0,0,45])holes(24,4,10,3.4);}
+} // end difference
+}//end module custom_holder
+
+//custom_holder();
+
+module custom_holder_body(){
+    height = 55;
+difference(){
+    hexagon(73.5,height,5);
+rotate([0,0,60])union(){
+    translate([0,-73.5,0-20])archway(50,50,40,20);
+    rotate([0,0,120])translate([0,-73.5,-20])archway(50,50,40,20);
+    rotate([0,0,-120])translate([0,-73.5,-20])archway(50,50,40,20);
+}// end union
+translate([0,0,-1])holes(71, 6, 2.2, 3.3);
+}// end difference
+rotate([0,180,0])translate([0,0,height-15]){
+        custom_holder();
+    } // end translate
+}// end module custom_holder_body
+
+difference(){
+custom_holder_body();
+    translate([0,0,-50]){rotate([0,0,30])holes(64,3,30,60,50);}
+}
+
