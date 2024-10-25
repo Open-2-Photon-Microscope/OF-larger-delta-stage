@@ -47,17 +47,18 @@ module spirit_level(height, radius){
 
 //spirit_level();
 
-module slide_holder_top(){
+module slide_holder_top(y_offset=15, z_offset=0){
     translate([0,0,-4]){
         rotate([180,0,0])difference(){
         hexagon(40,4,6);
         translate([0,0,-2])magnet_holes(32);
+        translate([0,-y_offset,-5.5-z_offset])cube([80,29.8,2.5],center=true);
     } // end difference
 }// end translate
-    translate([0,15,1])mic_slide(); // offset Y may be useful
+    translate([0,y_offset,1+z_offset])mic_slide(); // offset Y may be useful
 }// end module slide_holder_top
 
-//slide_holder_top();
+slide_holder_top(y_offset=0,z_offset=-2.2);
 
 module ch_hold(){
     difference(){
@@ -83,4 +84,4 @@ translate([0,y_offset,-2]){rotate([0,0,90])cube([28,58,4],center=true);}
 }// end module cham_holder_top
 
 //cham_holder_top(15);
-cham_holder_top(0);
+//cham_holder_top(0);
