@@ -28,8 +28,9 @@ from tkinter.filedialog import askdirectory  # User input interface
 import skimage as ski
 
 # Get main path
-outer_dir = dirname(os.getcwd())
-outer_dir = '/home/marcus1/Documents/data_collection/tiff_20-09-2024' ##REMOVE 
+outer_dir = input('Target folder (path): ')
+if outer_dir == '':
+    outer_dir = '/home/marcus1/Documents/data_collection/tiff_20-09-2024'
 # Ask user the path to the raw data (stack .tiff files)
 root = Tk()
 root.attributes("-topmost", True)
@@ -80,7 +81,7 @@ for i in range(0, nbr_files):
         print(image_name)
         image_id = image_name.split('_')[0].zfill(3)
         #protocol = '_'.join(image_full_path.split('\\')[1].split(' ')[0:2])
-        protocol = 'needs fixing'
+        protocol = 'long_term_drift'
 
 
         # get x , y and z values
@@ -117,9 +118,6 @@ coord_table['Slice_number'] = slice_nbr_list
 coord_table['X_input_steps'] = x_list
 coord_table['Y_input_steps'] = y_list
 coord_table['Z_input_steps'] = z_list
-coord_table['X_input_microm'] = coord_table['X_input_steps'] / 2
-coord_table['Y_input_microm'] = coord_table['Y_input_steps'] / 2
-coord_table['Z_input_microm'] = coord_table['Z_input_steps'] / 2
 coord_table['t'] = t_list
 
 # add the actual time in minutes
@@ -149,37 +147,30 @@ table_no_z = table_no_z[~table_no_z.newcol.duplicated(keep='last')].drop(columns
 table_no_z = table_no_z.reset_index()
 # Add a direction columns indicating the sign and axis of the movement
 
-for i in range(0, len(table_no_z)):
-    if table_no_z['X_input_microm'][i] == 0 and table_no_z['Y_input_microm'][i] == 0:
-        dir1 = 'Zero'
-    else:
-        dir1 = ''
-    if table_no_z['X_input_microm'][i] < 0:
-        dir2 = 'X_negative'
-    else:
-        dir2 = ''
-    if table_no_z['X_input_microm'][i] > 0:
-        dir3 = 'X_positive'
-    else:
-        dir3 = ''
-    if table_no_z['Y_input_microm'][i] < 0:
-        dir4 = 'Y_negative'
-    else:
-        dir4 = ''
-    if table_no_z['Y_input_microm'][i] > 0:
-        dir5 = 'Y_positive'
-    else:
-        dir5 = ''
-    direction = [dir1, dir2, dir3, dir4, dir5]
-    direction = [x for x in direction if x]
-    direction = '_'.join(direction)
-    direction_list.append(direction)
+for i in range(0, len(coord_table)):
+    d_str = ''
+    if coord_table['X_input_steps'][i] == 0 and coord_table['Y_input_steps'][i] == 0:
+        d_str += 'Zero'
+    
+    if coord_table['X_input_steps'][i] < 0:
+        d_str += 'X_negative'
+    
+    if coord_table['X_input_steps'][i] > 0:
+        d_str += 'X_positive'
+    
+    if coord_table['Y_input_steps'][i] < 0:
+        d_str += 'Y_negative'
+    
+    if coord_table['Y_input_steps'][i] > 0:
+        d_str += 'Y_positive'
+    
+    direction_list.append(d_str)
 
-table_no_z['Direction'] = direction_list
+coord_table['Direction'] = direction_list
 
 # save table as .csv
 current_time = datetime.now().strftime("%Y_%m_%d-%p%I_%M_%S")
-table_no_z.to_csv(path_or_buf=output_path + '/Theoretical_coordinates_table_drift_' + current_time + '.csv',
+coord_table.to_csv(path_or_buf=output_path + '/Theoretical_coordinates_table_drift_' + current_time + '.csv',
                    sep=',',
                    na_rep='NA',
                    header=True,

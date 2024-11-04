@@ -74,8 +74,7 @@ for i in range(0, nbr_files):
         image_name = os.path.splitext(os.path.basename(stack_files[i]))[0]
         print(image_name)
         image_id = image_name.split('_')[0].zfill(3)
-        #protocol = '_'.join(image_full_path.split('\\')[1].split(' ')[0:2])
-        protocol = 'needs fixing'
+        protocol = '_'.join(image_full_path.split('\\')[1].split(' ')[0:2])
 
 
         # get x , y and z values
