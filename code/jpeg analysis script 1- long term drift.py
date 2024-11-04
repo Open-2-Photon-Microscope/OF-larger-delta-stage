@@ -135,16 +135,7 @@ results = [0, 30, 60, 120]
 #create new column based on conditions in column1 and column2
 coord_table['Time_in_min'] = np.select(conditions, results)
 
-# Exclude z stacks
-table_no_z = coord_table[coord_table['Z_input_steps'] == 0].reset_index(drop=True)
 
-# Sort table by Protocol, Y values, X value and time
-table_no_z = table_no_z.sort_values(['Protocol', 'ID', 'X_input_steps', 'Y_input_steps', 't'],
-                            ascending=[True, True, True, True, True])
-
-table_no_z['newcol'] = table_no_z.apply(lambda x: str(x.Y_input_steps) + str(x.Y_input_steps) + str(x.t), axis=1)
-table_no_z = table_no_z[~table_no_z.newcol.duplicated(keep='last')].drop(columns=['newcol'])  # iloc used to remove new column.
-table_no_z = table_no_z.reset_index()
 # Add a direction columns indicating the sign and axis of the movement
 
 for i in range(0, len(coord_table)):
@@ -167,6 +158,10 @@ for i in range(0, len(coord_table)):
     direction_list.append(d_str)
 
 coord_table['Direction'] = direction_list
+
+# Sort table by Y values, X value and time
+coord_table = coord_table.sort_values(['ID', 'X_input_steps', 'Y_input_steps', 't', 'Direction'],
+                            ascending=[True, True, True, True, True])
 
 # save table as .csv
 current_time = datetime.now().strftime("%Y_%m_%d-%p%I_%M_%S")
