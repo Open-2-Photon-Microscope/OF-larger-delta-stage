@@ -30,7 +30,6 @@ plot_nbr = 0
 
 # Get main path
 outer_dir = dirname(os.getcwd())
-#outer_dir = '/home/marcus1/Documents/data_collection/Data/drift_data (Copy)' ##REMOVE 
 # Ask user the path to the coordinate table (can be for a single protocol or all protocol merged)
 root = Tk()
 root.attributes("-topmost", True)
