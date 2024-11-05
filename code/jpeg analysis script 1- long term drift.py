@@ -62,6 +62,7 @@ z_list = []
 t_list = []
 direction_list = []
 slice_nbr_list = []
+mins_list = []
 
 for i in range(0, nbr_files):
     # Open image and extract stack size
@@ -86,14 +87,21 @@ for i in range(0, nbr_files):
 
         # get x , y and z values
         coordinate_string = image_name.replace(image_id + "_", "").replace("_", "")
-        x = int(re.split(r'[xyzt]', coordinate_string)[1])
-        y = int(re.split(r'[xyzt]', coordinate_string)[2])
-        z = int(re.split(r'[xyzt]', coordinate_string)[3])
-        if(len(re.split(r'[xyzt]', coordinate_string))>4):
-            t = int(re.split(r'[xyzt]', coordinate_string)[4])
+        x = int(re.split(r'[xyztm]', coordinate_string)[1])
+        y = int(re.split(r'[xyztm]', coordinate_string)[2])
+        z = int(re.split(r'[xyztm]', coordinate_string)[3])
+        if(len(re.split(r'[xyztm]', coordinate_string))>4):
+            t = int(re.split(r'[xyztm]', coordinate_string)[4])
         else:
             t = 0
-        print("ID = ", image_id, ", X = ", x, ", Y = ", y, ", Z = ", z, ", t = ", t)
+        
+        #Take custom minute values
+        if(len(re.split(r'[xyztm]', coordinate_string))>5):
+            minutes = int(re.split(r'[xyztm]', coordinate_string)[5])
+            mins_list.append(minutes)
+
+        print("ID = ", image_id, ", X = ", x,
+               ", Y = ", y, ", Z = ", z, ", t = ", t)
 
         # Append all variable to lists
         path_list.append(image_full_path)
@@ -115,44 +123,48 @@ coord_table['Image_name'] = image_name_list
 coord_table['Protocol'] = protocol_list
 coord_table['ID'] = id_list
 coord_table['Slice_number'] = slice_nbr_list
-coord_table['X_input_steps'] = x_list
-coord_table['Y_input_steps'] = y_list
-coord_table['Z_input_steps'] = z_list
+coord_table['X_input_microm'] = x_list
+coord_table['Y_input_microm'] = y_list
+coord_table['Z_input_microm'] = z_list
 coord_table['t'] = t_list
 
-# add the actual time in minutes
-#define conditions
-conditions = [
-    (coord_table['t'] == 0),
-    (coord_table['t'] == 1),
-    (coord_table['t'] == 2),
-    (coord_table['t'] == 3),
 
-]
-#define results
-results = [0, 30, 60, 120]
+if len(mins_list) < 1:
+    # add the actual time in minutes
+    #define conditions
+    conditions = [
+        (coord_table['t'] == 0),
+        (coord_table['t'] == 1),
+        (coord_table['t'] == 2),
+        (coord_table['t'] == 3),
 
-#create new column based on conditions in column1 and column2
-coord_table['Time_in_min'] = np.select(conditions, results)
+    ]
+    #define results
+    results = [0, 30, 60, 120]
+
+    #create new column based on conditions in column1 and column2
+    coord_table['Time_in_min'] = np.select(conditions, results)
+else:
+    coord_table['Time_in_min'] = mins_list
 
 
 # Add a direction columns indicating the sign and axis of the movement
 
 for i in range(0, len(coord_table)):
     d_str = ''
-    if coord_table['X_input_steps'][i] == 0 and coord_table['Y_input_steps'][i] == 0:
+    if coord_table['X_input_microm'][i] == 0 and coord_table['Y_input_microm'][i] == 0:
         d_str += 'Zero'
     
-    if coord_table['X_input_steps'][i] < 0:
+    if coord_table['X_input_microm'][i] < 0:
         d_str += 'X_negative'
     
-    if coord_table['X_input_steps'][i] > 0:
+    if coord_table['X_input_microm'][i] > 0:
         d_str += 'X_positive'
     
-    if coord_table['Y_input_steps'][i] < 0:
+    if coord_table['Y_input_microm'][i] < 0:
         d_str += 'Y_negative'
     
-    if coord_table['Y_input_steps'][i] > 0:
+    if coord_table['Y_input_microm'][i] > 0:
         d_str += 'Y_positive'
     
     direction_list.append(d_str)
@@ -160,7 +172,7 @@ for i in range(0, len(coord_table)):
 coord_table['Direction'] = direction_list
 
 # Sort table by Y values, X value and time
-coord_table = coord_table.sort_values(['ID', 'X_input_steps', 'Y_input_steps', 't', 'Direction'],
+coord_table = coord_table.sort_values(['ID', 'X_input_microm', 'Y_input_microm', 't', 'Direction'],
                             ascending=[True, True, True, True, True])
 
 # save table as .csv

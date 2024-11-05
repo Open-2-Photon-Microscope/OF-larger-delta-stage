@@ -33,7 +33,6 @@ def cross_correlation_drift(coord, px_size):
     distance = "(" + str(int(coord['X_input_microm'][0])) + ";" + str(int(coord['Y_input_microm'][0])) + ")"
     t0_path = coord.loc[coord['t']==0, 'Image_path'].item()
     t0_image = cv2.imread(t0_path)
-    input(t0_path)
     t0_image = cv2.cvtColor(t0_image, cv2.COLOR_BGR2GRAY)
     image_list.append(t0_image)
 
@@ -78,7 +77,7 @@ def cross_correlation_drift(coord, px_size):
     ax0.imshow(image_list[0], cmap='inferno')
     ax0.set_axis_off()
     ax0.set_title('T0 = 0')
-    #plt.show()
+    plt.show()
 
     for i in range(1,len(coord)):
         txt_y = round(0.30-(i*0.05),2)
@@ -92,7 +91,7 @@ def cross_correlation_drift(coord, px_size):
         ax_i.set_axis_off()
         ax_i.set_title(f"T{i} = {coord['Time_in_min'][i]} min")
         ax_i.patch.set_linewidth(1)
-    plt.show()
+        plt.show()
 
         # plt.close()
         # return the translation coordinates and plots
