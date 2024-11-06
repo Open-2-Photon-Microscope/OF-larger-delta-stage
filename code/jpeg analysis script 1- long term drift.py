@@ -30,7 +30,7 @@ import skimage as ski
 # Get main path
 outer_dir = input('Target folder (path): ')
 if outer_dir == '':
-    outer_dir = '/home/marcus1/Documents/data_collection/tiff_20-09-2024'
+    outer_dir = '/home/marcus1/Documents/data_collection/tiff_06-10-2024'
 # Ask user the path to the raw data (stack .tiff files)
 root = Tk()
 root.attributes("-topmost", True)
@@ -83,7 +83,6 @@ for i in range(0, nbr_files):
         image_id = image_name.split('_')[0].zfill(3)
         #protocol = '_'.join(image_full_path.split('\\')[1].split(' ')[0:2])
         protocol = 'long_term_drift'
-
 
         # get x , y and z values
         coordinate_string = image_name.replace(image_id + "_", "").replace("_", "")

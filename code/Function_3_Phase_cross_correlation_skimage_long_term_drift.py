@@ -33,7 +33,7 @@ def cross_correlation_drift(coord, px_size):
     distance = "(" + str(int(coord['X_input_microm'][0])) + ";" + str(int(coord['Y_input_microm'][0])) + ")"
     t0_path = coord.loc[coord['t']==0, 'Image_path'].item()
     t0_image = cv2.imread(t0_path)
-    input(t0_path)
+    #input(t0_path)
     t0_image = cv2.cvtColor(t0_image, cv2.COLOR_BGR2GRAY)
     image_list.append(t0_image)
 

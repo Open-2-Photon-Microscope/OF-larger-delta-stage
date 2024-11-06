@@ -65,6 +65,7 @@ for i in range(0, len(direction_list)):
     plot_path = (f"{output_path}/{protocol}/{plot_id}_{direction}_drift.png")
 
     # Compute a rigid transformation (without depth, only scale + rotation + translation)
+    #TODO: remove depending on direction to allow many different positions to be used with same direction
     coord, full_plot = cross_correlation_drift(coord=short_table, px_size=px_size)
     full_plot.savefig(plot_path)
 
