@@ -4,9 +4,13 @@ import cv2
 import serial
 import time
 
-def capture_image(save_path):
-    # Initialize the webcam
-    cap = cv2.VideoCapture(0)
+
+def capture_image(save_path,capture=False):
+    if type(capture) != cv2.VideoCapture:
+        # Initialize the webcam
+        cap = cv2.VideoCapture(0)
+    else:
+        cap = capture
 
     # Check if the webcam is opened successfully
     if not cap.isOpened():
@@ -25,9 +29,10 @@ def capture_image(save_path):
     cv2.imwrite(save_path, frame)
     print(f"Image saved to {save_path}")
 
-    # Release the webcam and close any OpenCV windows
-    cap.release()
-    cv2.destroyAllWindows()
+    if type(capture) != cv2.VideoCapture:
+        # Release the webcam and close any OpenCV windows
+        cap.release()
+        cv2.destroyAllWindows()
 
 
 

@@ -26,7 +26,7 @@ device = belay.Device(device_path, baudrate=115200)
 @device.setup
 def setup():
     from cart_del import Stage
-    stage = Stage()    
+    stage = Stage(skip_init=True)    
 
 
 @device.task
