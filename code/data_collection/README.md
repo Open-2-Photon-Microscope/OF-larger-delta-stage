@@ -26,7 +26,8 @@ Once the script is finished running, it will have created many folders. I recomm
 Sometimes trouble happens: _c'est la vie_.  
 
 - The most common error that might happen is:
-	`[ WARN:0@3839.300] global cap_v4l.cpp:889 requestBuffers VIDEOIO(V4L2:/dev/video0): failed VIDIOC_REQBUFS: errno=19 (No such device)`
+	`[ WARN:0@3839.300] global cap_v4l.cpp:889 requestBuffers VIDEOIO(V4L2:/dev/video0): failed VIDIOC_REQBUFS: errno=19 (No such device)`  
+	At this point the script _should_ automatically stop.
 	- __Solution__: 
 		1. Unplug and replug the usb microscope
 		2. If the terminal is still active run `usb.moveto([0,0,0])` otherwise you will need to re-home the device manually

@@ -96,7 +96,10 @@ if __name__ == "__main__":
     if input('Go? [y/n] ').lower() == 'y':
         c = Collector(X_range=X_range, Y_range=Y_range)
         c.gen_target_pos(3,3)
-        c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1)
+        iterations = int(input('Number of iterations? \nNB: each takes over 2 hours. '))
+        for i in range(iterations):
+            print(f'Iteration {i}')
+            c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1, iter=i)
     
     elif input('Test? [y/n]').lower() == 'y':
         c = Collector(X_range=1, Y_range=1)
@@ -105,3 +108,12 @@ if __name__ == "__main__":
             c.automate_collect(time_delay=[0,1],rest=3, img_burst=1, iter=i)
 
 c.cap.release()
+
+########################################################
+# ATTENTION
+########################################################
+'''
+Use the command ctrl + shift + e to exit iPython
+Use command ctrl + shift + r to run this script
+Trust me.
+'''
