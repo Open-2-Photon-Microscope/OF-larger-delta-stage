@@ -25,6 +25,7 @@ def capture_image(save_path,capture=False):
     # Check if the frame was captured successfully
     if not ret:
         print("Error: Failed to grab frame")
+        sys.exit()
         return
 
     # Save the captured image to the specified path

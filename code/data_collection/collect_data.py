@@ -96,18 +96,19 @@ if __name__ == "__main__":
     if input('Go? [y/n] ').lower() == 'y':
         c = Collector(X_range=X_range, Y_range=Y_range)
         c.gen_target_pos(3,3)
-        iterations = int(input('Number of iterations? \nNB: each takes over 2 hours. '))
+        iterations = int(input('Number of iterations? \nNB: each takes over 18 hours. '))
         for i in range(iterations):
             print(f'Iteration {i}')
             c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1, iter=i)
-    
-    elif input('Test? [y/n]').lower() == 'y':
-        c = Collector(X_range=1, Y_range=1)
-        c.gen_target_pos(1,1)
-        for i in range(3):
-            c.automate_collect(time_delay=[0,1],rest=3, img_burst=1, iter=i)
+        c.cap.release()
 
-c.cap.release()
+    elif input('Test? [y/n]').lower() == 'y':
+        for i in range(3):
+            c = Collector(X_range=1, Y_range=1)
+            c.gen_target_pos(1,1)
+            c.automate_collect(time_delay=[0,1,1,1,1,1,1,1,1],rest=0.1, img_burst=1, iter=i)
+        c.cap.release()
+
 
 ########################################################
 # ATTENTION
