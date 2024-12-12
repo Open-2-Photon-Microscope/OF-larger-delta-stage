@@ -104,7 +104,8 @@ module foot(travel=5,       // how far into the foot the actuator can move down
             actuator_tilt=0,// the angle of the top of the foot
             //entry_w=2*column_base_radius()+3,
             entry_w=99,
-            lie_flat=true){
+            lie_flat=true,
+            endstop=false){
     // The feet sit at the bottoms of the actuator columns.  Their main
     // function is to anchor the Viton bands and provide downward force.  They
     // may also be two out of the three points of contact between the microscope
@@ -180,12 +181,41 @@ module foot(travel=5,       // how far into the foot the actuator can move down
             translate([0,0.5-(h-travel)*sin(actuator_tilt),h-travel-endstop_hole_offset]) rotate([0,0,-90]) scale([1.03,1.08,1])endstop_hole(actuator_tilt);
         }
     } 
+    if(endstop == true){
+        translate([0,-8,0])switch_holder();}
     
 }   
 
-module feet_for_printing(lie_flat=true){
+module switch_holder(hole_w=2,
+                    hole_offset=6,
+                    hole_h=2,
+                    switch_h=6.5,
+                    switch_w=13.5,
+                    switch_d=6,
+                    board_h=1.8,
+                    thickness=4,
+                    gap_w=3.3){
+    $fn=30;
+    difference(){
+        translate([0,-switch_d/2,switch_h/2])cube([switch_w+thickness,switch_d+thickness,switch_h],center=true);
+        union(){ // switch and holes
+            translate([0,-switch_d/2,switch_h/2])cube([switch_w, switch_d, switch_h],center=true);
+            rotate([90,90,0]){
+                translate([-hole_w/2-hole_h,hole_offset/2,0])cylinder(d=hole_w,h=switch_d*2);
+                translate([-hole_w/2-hole_h,-hole_offset/2,0])cylinder(d=hole_w,h=switch_d*2);
+                }//end rotate
+                translate([0,-switch_d,-board_h/2])cube([switch_w*2,switch_d*2,board_h],center=true);
+             translate([switch_w/2,-switch_d/2,switch_h/2])cube([gap_w,gap_w,switch_h],center=true);
+            }//end union
+    }//end difference
+    
+}//end module
+
+//switch_holder();
+
+module feet_for_printing(lie_flat=true, hover=2, endstop=false){
     for (t=[-1, 0, 1])
-        translate([t*(ss_outer()[0]+1.5), 0]) foot(hover=2, lie_flat=lie_flat);
+        translate([t*(ss_outer()[0]+1.5), 0]) foot(hover=hover, lie_flat=lie_flat, endstop=endstop);
 }
 
-feet_for_printing(lie_flat=true);
+feet_for_printing(lie_flat=true, hover=2, endstop=true);

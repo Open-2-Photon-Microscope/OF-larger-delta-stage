@@ -13,7 +13,8 @@ class Collector():
                  save_path='/home/marcus1/Documents/data_collection/drift_data_',
                  X_range=1000,
                  Y_range=1000,
-                 cap=cv2.VideoCapture(0)):
+                 cap=cv2.VideoCapture(0),
+                 ):
 
         self.X_range: int = X_range
         self.Y_range: int = Y_range
@@ -67,7 +68,7 @@ class Collector():
 
             for t in range(len(time_delay)): # how many time frames
                 for b in range(img_burst): # images per frame
-                    mins += time_delay[t]
+                    mins += time_delay[t] #TODO move to after img.capture_image
                     img.capture_image(save_path + str(start_ID) + filename + str(t) + f'_m{mins}.jpg', capture=self.cap)
                     start_ID += 1
                     time.sleep(rest)
@@ -107,7 +108,7 @@ if __name__ == "__main__":
             c = Collector(X_range=1, Y_range=1)
             c.gen_target_pos(1,1)
             c.automate_collect(time_delay=[0,1,1,1,1,1,1,1,1],rest=0.1, img_burst=1, iter=i)
-        c.cap.release()
+        #c.cap.release()
 
 
 ########################################################
