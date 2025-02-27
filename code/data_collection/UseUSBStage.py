@@ -5,6 +5,7 @@
 
 import os
 import subprocess
+import belay
 
 def grant_usb_access(device_path):
     try:
@@ -19,7 +20,7 @@ device_path = '/dev/ttyUSB0'
 grant_usb_access(device_path)
 
 
-import belay
+
 
 device = belay.Device(device_path, baudrate=115200)
 

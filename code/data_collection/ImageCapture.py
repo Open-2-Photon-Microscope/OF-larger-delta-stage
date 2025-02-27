@@ -1,4 +1,4 @@
-# imagecapture/bin/activte
+# source imagecapture/bin/activte
 
 import cv2
 import serial
