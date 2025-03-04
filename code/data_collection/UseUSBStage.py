@@ -27,13 +27,16 @@ device = belay.Device(device_path, baudrate=115200)
 @device.setup
 def setup():
     from cart_del import Stage
-    stage = Stage(skip_init=True)    
+    stage = Stage(skip_init=True) 
+    
 
 
 @device.task
 def move_to(target: list):
+    #stage.zero(skip=True)
     stage.move_to(target)
     position = [stage.X_pos, stage.Y_pos, stage.Z_pos]
+    print(position)
     return position
 
 @device.task

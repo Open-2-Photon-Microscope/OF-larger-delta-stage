@@ -9,7 +9,7 @@ import sys
 def capture_image(save_path,capture=False):
     if type(capture) != cv2.VideoCapture:
         # Initialize the webcam
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture()
     else:
         cap = capture
 

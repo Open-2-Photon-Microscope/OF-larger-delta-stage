@@ -1,4 +1,5 @@
 # AUTOMATE DATA COLLECTION
+# source imagecapture/bin/activte
 
 import ImageCapture as img
 import UseUSBStage as usb
@@ -6,6 +7,7 @@ import time
 import cv2
 import os
 from numpy import linspace
+from datetime import datetime
 
 
 class Collector():
@@ -48,7 +50,7 @@ class Collector():
                          wait=0, # wait before starting
                          start_ID=0,
                          iter=0):
-        save_path = self.save_path + str(iter) + '/'
+        save_path = self.save_path + str(iter) + str(datetime.today()) + '/'
         os.makedirs(save_path, exist_ok=True)
 
         filename = ''
@@ -105,10 +107,11 @@ if __name__ == "__main__":
 
     elif input('Test? [y/n]').lower() == 'y':
         for i in range(3):
-            c = Collector(X_range=1, Y_range=1)
+            print(f'run {i}')
+            c = Collector(X_range=100, Y_range=100)
             c.gen_target_pos(1,1)
             c.automate_collect(time_delay=[0,1,1,1,1,1,1,1,1],rest=0.1, img_burst=1, iter=i)
-        #c.cap.release()
+            c.cap.release()
 
 
 ########################################################
