@@ -1,29 +1,30 @@
 # AUTOMATE DATA COLLECTION
 # source imagecapture/bin/activte
 
-import ImageCapture as img
-import UseUSBStage as usb
+import v4l_cap as img
+import newUSBStage as usb
 import time
-import cv2
 import os
+import gc
 from numpy import linspace
 from datetime import datetime
+from v4l_cap import capture_image2
+from ResetUSB import reset_usb_device
 
+gc.collect()
 
 class Collector():
     def __init__(self,
                  save_path='/home/marcus1/Documents/data_collection/drift_data_',
                  X_range=1000,
                  Y_range=1000,
-                 cap=cv2.VideoCapture(0),
                  ):
 
         self.X_range: int = X_range
         self.Y_range: int = Y_range
         self.save_path: str = save_path
-        self.cap = cap
         self.device_path:str
-        usb.setup()
+
     
     def gen_target_pos(self, x_steps, y_steps):
         x_coords: list
@@ -62,8 +63,18 @@ class Collector():
 
         for position in coord_list:
             i += 1
-            pos = usb.move_to(position)
-            time.sleep(rest)
+            q=0
+
+            #create new usb device
+            stage = usb.find_usb_device()
+            stage.zero()
+            pos = stage.move_to(position)
+            stage.close() # avoid long connections
+
+            for j in range(rest):
+                print(q, end='\r')
+                time.sleep(1)
+                q+=1
             # NB filename values are /2 to illustrate um because the stage's internal measures are in STEPS
             filename = f"_x{round(pos[0]/2)}y{round(pos[1]/2)}z{round(pos[2]/2)}_t"
             mins = 0
@@ -71,7 +82,7 @@ class Collector():
             for t in range(len(time_delay)): # how many time frames
                 for b in range(img_burst): # images per frame
                     mins += time_delay[t] #TODO move to after img.capture_image
-                    img.capture_image(save_path + str(start_ID) + filename + str(t) + f'_m{mins}.jpg', capture=self.cap)
+                    img.capture_image2(save_path + str(start_ID) + filename + str(t) + f'_m{int(mins/60)}.raw')
                     start_ID += 1
                     time.sleep(rest)
                 time.sleep(time_delay[t])
@@ -79,7 +90,9 @@ class Collector():
             #start_ID += 1
             print(f"{i} out of {len(coord_list)} complete")
         
-        usb.move_to([0,0,0])
+        stage = usb.find_usb_device()
+        stage.zero()
+        stage.close()
    
 
 def set_times(delay_mins=10, times=12):
@@ -102,16 +115,17 @@ if __name__ == "__main__":
         iterations = int(input('Number of iterations? \nNB: each takes over 18 hours. '))
         for i in range(iterations):
             print(f'Iteration {i}')
+            reset_usb_device.reset_usb_device()
             c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1, iter=i)
-        c.cap.release()
+        #c.cap.release()
 
     elif input('Test? [y/n]').lower() == 'y':
+        c = Collector(X_range=900, Y_range=900)
+        c.gen_target_pos(1,1)
         for i in range(3):
             print(f'run {i}')
-            c = Collector(X_range=100, Y_range=100)
-            c.gen_target_pos(1,1)
-            c.automate_collect(time_delay=[0,1,1,1,1,1,1,1,1],rest=0.1, img_burst=1, iter=i)
-            c.cap.release()
+            c.automate_collect(time_delay=[0,1,1,1,1,1,1,1,1],rest=10, img_burst=1, iter=i)
+        #c.cap.release()
 
 
 ########################################################
