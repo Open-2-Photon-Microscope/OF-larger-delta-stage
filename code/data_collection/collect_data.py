@@ -15,7 +15,7 @@ gc.collect()
 
 class Collector():
     def __init__(self,
-                 save_path='/home/marcus1/Documents/data_collection/drift_data_',
+                 save_path='/media/marcus1/large_chungus/data_collection/drift_data_',
                  X_range=1000,
                  Y_range=1000,
                  ):

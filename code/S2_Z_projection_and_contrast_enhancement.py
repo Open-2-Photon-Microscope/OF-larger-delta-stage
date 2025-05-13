@@ -32,7 +32,7 @@ from Function_2_Z_projection import stretch_intensity
 
 # Get main path
 outer_dir = dirname(os.getcwd())
-outer_dir = '/home/marcus1/Documents/data_collection' ##REMOVE 
+outer_dir = input('enter path to files:') ##REMOVE 
 # Ask user the path to the coordinate table (can be for a single protocol or all protocol merged)
 root = Tk()
 root.attributes("-topmost", True)

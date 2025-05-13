@@ -28,8 +28,8 @@ from tkinter.filedialog import askdirectory  # User input interface
 import skimage as ski
 
 # Get main path
-outer_dir = dirname(os.getcwd())
-outer_dir = '/home/marcus1/Documents/data_collection/tiff_20-09-2024' ##REMOVE 
+#outer_dir = dirname(os.getcwd())
+outer_dir = input('Enter the location of .tiff files: ')
 # Ask user the path to the raw data (stack .tiff files)
 root = Tk()
 root.attributes("-topmost", True)
@@ -42,7 +42,7 @@ output_path = outer_dir + "/Data"
 os.makedirs(output_path, exist_ok=True)  # exist_ok set to true to not raise an error if the folder exists
 
 # Set fixed variables
-slice_nbr = 0
+slice_nbr = 200
 
 # Find all stack .tiff in the selected directory
 path = stack_path + '/**/*.tiff'
@@ -58,6 +58,7 @@ x_list = []
 y_list = []
 z_list = []
 t_list = []
+m_list = []
 direction_list = []
 slice_nbr_list = []
 
@@ -65,28 +66,39 @@ for i in range(0, nbr_files):
     # Open image and extract stack size
     im = ski.io.imread(stack_files[i], dtype=np.uint16)
     # check stack is 200 slices
-    if im.shape[2] >= slice_nbr:
+    if len(im.shape)==3 and im.shape[:] < slice_nbr:
+        print('Not enough slices in file : %s' % stack_files[i])
+        pass
+    else:
         print('Correct slide number in file')
-        slice_nbr = im.shape[2]
+        if len(im.shape) == 3:
+            slice_nbr = im.shape[2]
+        else:
+            slice_nbr = 1
 
         # get path and ID
         image_full_path = stack_files[i]
         image_name = os.path.splitext(os.path.basename(stack_files[i]))[0]
         print(image_name)
-        image_id = image_name.split('_')[0].zfill(3)
-        protocol = '_'.join(image_full_path.split('\\')[1].split(' ')[0:2])
-
+        image_id = image_name.split('_')[0].zfill(3) #TODO: revisit
+        if len(image_name.split('_')[0]) < 3:
+            a = 3 - len(image_name.split('_')[0])
+            image_name = image_name.zfill(len(image_name)+a)
+        #protocol = '_'.join(image_full_path.split('\\')[1].split(' ')[0:2])
+        protocol = 'long_term_drift'
 
         # get x , y and z values
-        coordinate_string = image_name.replace(image_id + "_", "").replace("_", "")
+        coordinate_string = image_name.replace(image_name.split('_')[0] + "_", "").replace("_", "")
         x = int(re.split(r'[xyzt]', coordinate_string)[1])
         y = int(re.split(r'[xyzt]', coordinate_string)[2])
         z = int(re.split(r'[xyzt]', coordinate_string)[3])
         if(len(re.split(r'[xyzt]', coordinate_string))>4):
-            t = int(re.split(r'[xyzt]', coordinate_string)[4])
+            t = int(re.split(r'[xyztm]', coordinate_string)[4]) #which time interval
+            m = int(re.split(r'[xyztm]', coordinate_string)[5]) #how many minutes since last move
         else:
             t = 0
-        print("ID = ", image_id, ", X = ", x, ", Y = ", y, ", Z = ", z, ", t = ", t)
+            m = 0
+        print("ID = ", image_id, ",\nX = ", x, ",\nY = ", y, ",\nZ = ", z, ",\nt = ", t, "\n,m = ", m)
 
         # Append all variable to lists
         path_list.append(image_full_path)
@@ -97,9 +109,8 @@ for i in range(0, nbr_files):
         y_list.append(y)
         z_list.append(z)
         t_list.append(t)
+        m_list.append(m)
         slice_nbr_list.append(slice_nbr)
-    else:
-        print('Not enough slices in file : %s' % stack_files[i])
 
 # Create a file containing all the variables  by merging lists into a dataframe
 coord_table = pd.DataFrame()
@@ -108,41 +119,33 @@ coord_table['Image_name'] = image_name_list
 coord_table['Protocol'] = protocol_list
 coord_table['ID'] = id_list
 coord_table['Slice_number'] = slice_nbr_list
-coord_table['X_input_steps'] = x_list
-coord_table['Y_input_steps'] = y_list
-coord_table['Z_input_steps'] = z_list
-coord_table['X_input_microm'] = coord_table['X_input_steps'] / 2
-coord_table['Y_input_microm'] = coord_table['Y_input_steps'] / 2
-coord_table['Z_input_microm'] = coord_table['Z_input_steps'] / 2
+coord_table['X_input_microm'] = x_list
+coord_table['Y_input_microm'] = y_list
+coord_table['Z_input_microm'] = z_list
 coord_table['t'] = t_list
 
-# add the actual time in minutes
-#define conditions
-conditions = [
-    (coord_table['t'] == 0),
-    (coord_table['t'] == 1),
-    (coord_table['t'] == 2),
-    (coord_table['t'] == 3),
 
-]
-#define results
-results = [0, 30, 60, 120]
+# # add the actual time in minutes
+coord_table['Time_in_min'] = m_list
+# #define conditions
+# conditions = [
+#     (coord_table['t'] == 0),
+#     (coord_table['t'] == 1),
+#     (coord_table['t'] == 2),
+#     (coord_table['t'] == 3),
 
-#create new column based on conditions in column1 and column2
-coord_table['Time_in_min'] = np.select(conditions, results)
+# ]
+# #define results
+# results = [0, 30, 60, 120]
+
+# #create new column based on conditions in column1 and column2
+# coord_table['Time_in_min'] = np.select(conditions, results)
 
 # Exclude z stacks
-table_no_z = coord_table[coord_table['Z_input_steps'] == 0].reset_index(drop=True)
+# table_no_z = coord_table[coord_table['Z_input_steps'] == 0].reset_index(drop=True)
+table_no_z = coord_table
 
-# Sort table by Protocol, Y values, X value and time
-table_no_z = table_no_z.sort_values(['Protocol', 'ID', 'X_input_steps', 'Y_input_steps', 't'],
-                            ascending=[True, True, True, True, True])
-
-table_no_z['newcol'] = table_no_z.apply(lambda x: str(x.Y_input_steps) + str(x.Y_input_steps) + str(x.t), axis=1)
-table_no_z = table_no_z[~table_no_z.newcol.duplicated(keep='last')].drop(columns=['newcol'])  # iloc used to remove new column.
-table_no_z = table_no_z.reset_index()
 # Add a direction columns indicating the sign and axis of the movement
-
 for i in range(0, len(table_no_z)):
     if table_no_z['X_input_microm'][i] == 0 and table_no_z['Y_input_microm'][i] == 0:
         dir1 = 'Zero'
@@ -170,6 +173,15 @@ for i in range(0, len(table_no_z)):
     direction_list.append(direction)
 
 table_no_z['Direction'] = direction_list
+
+# Sort table by Protocol, Y values, X value and time
+table_no_z = table_no_z.sort_values(['ID'],
+                            ascending=[True])
+
+# table_no_z['newcol'] = table_no_z.apply(lambda x: str(x.Y_input_steps) + str(x.Y_input_steps) + str(x.t), axis=1)
+# table_no_z = table_no_z[~table_no_z.newcol.duplicated(keep='last')].drop(columns=['newcol'])  # iloc used to remove new column.
+# table_no_z = table_no_z.reset_index()
+
 
 # save table as .csv
 current_time = datetime.now().strftime("%Y_%m_%d-%p%I_%M_%S")
