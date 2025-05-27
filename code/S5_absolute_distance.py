@@ -5,6 +5,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from statistics import stdev, mean
+from Function_4_Plot_xy_scatter_grid import drift_plot_grid
 
 def get_hypot(dx,dy):
     hypot = abs(math.sqrt(dx**2 + dy**2))
@@ -82,7 +83,7 @@ for path, folders, files in os.walk(directory):
                 data['px_drift'] = px_drift
                 
                 all_data = pd.concat([all_data,data]).reset_index(drop=True)
-       'Time_in_min'data = all_data[['Direction','Time_in_min','px_drift']].fillna(0)
+useful_data = all_data[['Direction','Time_in_min','px_drift']].fillna(0)
 
 useful_data.to_csv(f'{directory}/drift_data.csv',index=False)
 useful_data.sort_values('Direction')
@@ -107,3 +108,4 @@ plot_data = pd.DataFrame(plot_data, columns=['Direction','Time_in_min','Mean_px_
 plot_data = plot_data.sort_values(['Direction','Time_in_min'])
 plot_data.to_csv(f'{directory}/mean_drift_data.csv',index=False)
 #plot_nice(plot_data)
+#bplot(useful_data,x='Direction')
