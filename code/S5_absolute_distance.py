@@ -88,10 +88,7 @@ useful_data = all_data[['Direction','Time_in_min','px_drift']].fillna(0)
 useful_data.to_csv(f'{directory}/drift_data.csv',index=False)
 useful_data.sort_values('Direction')
 
-
-
 plot_data = []
-
 
 direction_set = set(useful_data['Direction'].to_list())
 for direction in direction_set:
