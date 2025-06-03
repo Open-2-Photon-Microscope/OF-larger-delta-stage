@@ -8,7 +8,6 @@ import os
 import gc
 from numpy import linspace
 from datetime import datetime
-from v4l_cap import capture_image2
 from ResetUSB import reset_usb_device
 
 gc.collect()
@@ -50,8 +49,9 @@ class Collector():
                          rest=10, # rest while moving / between imgs
                          wait=0, # wait before starting
                          start_ID=0,
-                         iter=0):
-        save_path = self.save_path + str(iter) + str(datetime.today()) + '/'
+                         iter=0,
+                         custom_path_text=''):
+        save_path = self.save_path + str(iter) + str(datetime.today()) + custom_path_text+'/'
         os.makedirs(save_path, exist_ok=True)
 
         filename = ''
@@ -82,7 +82,7 @@ class Collector():
             for t in range(len(time_delay)): # how many time frames
                 for b in range(img_burst): # images per frame
                     mins += time_delay[t] #TODO move to after img.capture_image
-                    img.capture_image2(save_path + str(start_ID) + filename + str(t) + f'_m{int(mins/60)}.raw')
+                    img.capture_image2(save_path + str(start_ID) + filename + str(t) + f'_m{int(mins/60)}.raw',opt=1)
                     start_ID += 1
                     time.sleep(rest)
                 time.sleep(time_delay[t])
@@ -103,7 +103,8 @@ def set_times(delay_mins=10, times=12):
     return time_delay_list
 
 #time_delay_list = [60*60,60*60]
-time_delay_list = set_times()
+#time_delay_list = set_times()
+time_delay_list = set_times(delay_mins = 1, times=10)
 
 X_range = 9000
 Y_range = 9000
@@ -116,7 +117,7 @@ if __name__ == "__main__":
         for i in range(iterations):
             print(f'Iteration {i}')
             reset_usb_device.reset_usb_device()
-            c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1, iter=i)
+            c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1, iter=i,custom_path_text='10x1min')
         #c.cap.release()
 
     elif input('Test? [y/n]').lower() == 'y':
@@ -126,13 +127,3 @@ if __name__ == "__main__":
             print(f'run {i}')
             c.automate_collect(time_delay=[0,1,1,1,1,1,1,1,1],rest=10, img_burst=1, iter=i)
         #c.cap.release()
-
-
-########################################################
-# ATTENTION
-########################################################
-'''
-Use the command ctrl + shift + e to exit iPython
-Use command ctrl + shift + r to run this script
-Trust me.
-'''

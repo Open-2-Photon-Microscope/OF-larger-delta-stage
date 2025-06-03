@@ -2,8 +2,8 @@ from linuxpy.video.device import Device
 import glob
 
 
-def capture_image2(filepath):
-    g = int(glob.glob('/dev/video*')[0].split('video')[1])
+def capture_image2(filepath,opt=0):
+    g = int(glob.glob('/dev/video*')[opt].split('video')[1])
     # Open the camera device
     with Device.from_id(g) as camera:
         frame = next(iter(camera))  # Capture a single frame
