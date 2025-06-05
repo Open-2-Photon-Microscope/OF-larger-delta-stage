@@ -113,11 +113,11 @@ if __name__ == "__main__":
     if input('Go? [y/n] ').lower() == 'y':
         c = Collector(X_range=X_range, Y_range=Y_range)
         c.gen_target_pos(3,3)
-        iterations = int(input('Number of iterations? \nNB: each takes over 18 hours. '))
+        iterations = int(input(f'Number of iterations? \nNB: each takes around {round(sum(time_delay_list)*9/3600,1)} hours. '))
         for i in range(iterations):
             print(f'Iteration {i}')
             reset_usb_device.reset_usb_device()
-            c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1, iter=i,custom_path_text='10x1min')
+            c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1, iter=i,custom_path_text='20x1min')
         #c.cap.release()
 
     elif input('Test? [y/n]').lower() == 'y':

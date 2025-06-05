@@ -74,4 +74,4 @@ for i in range(0, len(direction_list)):
 
 
 coord_all = pd.concat(appended_data)
-coord_all.to_csv(output_path + "/Coord_table_cv2_cross_correlation.csv", index=False)
+coord_all.to_csv(output_path + "/Coord_table_cv2_cross_correlation.csv", index=True)
