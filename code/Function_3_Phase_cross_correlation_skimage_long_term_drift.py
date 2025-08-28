@@ -27,6 +27,7 @@ from skimage.registration import phase_cross_correlation
 # Gives a shift (tx, ty)
 
 def cross_correlation_drift(coord, px_size):
+    print("the coord is ",coord)
     image_list = []
     # Find and read image at t0
     direction = coord['Direction'][0]
@@ -92,7 +93,7 @@ def cross_correlation_drift(coord, px_size):
         ax_i.set_axis_off()
         ax_i.set_title(f"T{i} = {coord['Time_in_min'][i]} min")
         ax_i.patch.set_linewidth(1)
-    plt.show()
+    #plt.show()
 
         # plt.close()
         # return the translation coordinates and plots

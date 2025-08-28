@@ -9,7 +9,7 @@ def find_usb_device():
     for port in possible_ports:
         try:
             print(f"Trying {port}...")
-            device = StageDevice(port)
+            device = StageDevice(port,attempts=-1)
             print(f"Connected to {port}")
             return device  # Return the first successful connection
         except Exception as e:

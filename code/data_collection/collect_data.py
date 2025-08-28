@@ -117,7 +117,7 @@ if __name__ == "__main__":
         for i in range(iterations):
             print(f'Iteration {i}')
             reset_usb_device.reset_usb_device()
-            c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1, iter=i,custom_path_text='20x1min')
+            c.automate_collect(time_delay=time_delay_list,rest=30, img_burst=1, iter=i,custom_path_text='10x1min')
         #c.cap.release()
 
     elif input('Test? [y/n]').lower() == 'y':
