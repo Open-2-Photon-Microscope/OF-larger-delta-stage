@@ -18,53 +18,59 @@ def generate_positions(distances,reps=1):
                     positions.append([x*distance,y*distance,0])
     return positions
 
-def move_collect(positions, folder_path, backlash, i=0):
+def move_collect(positions, folder_path, backlash, i=0,rest=10):
     ''' Take picture at zero
-    Iterate through each position
-    Take a picture there.
-    Move back to zero
-    New picture
+    Iterate through each position:
+        Move to position
+        Take a picture there
+        Move back to zero
+        New picture
     '''
+    save_path = folder_path + f'rep_data_backlash{backlash}_{datetime.today()}/'
+    os.makedirs(save_path, exist_ok=True)
     for position in positions:
-        reset_usb_device.reset_usb_device()
+        #reset_usb_device.reset_usb_device()
         # initial image
         pos = [0,0,0]
-        filepath = folder_path + (f'rep_data_backlash{backlash}_{datetime.today()}/' + 
-                            str(i).zfill(3) +
-                            f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw')
+        stage(f"stage.move_to({pos})")
+        filepath = save_path + str(i).zfill(3) + f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw'
+        time.sleep(1)
         img.capture_image2(filepath)
-        
+        i += 1
+
         #execute movement on device
-        pos = stage.move_to(position)
-        while stage.is_running == True:
-            time.sleep(1)
+        pos = position
+        stage(f"stage.move_to({position})")
+        time.sleep(rest)
         #capture image
         #names to follow the format nnn_x?_y?_z?.raw
-        i += 1
-        filepath = folder_path + (str(i).zfill(3) +
-            f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw')
+        filepath = save_path + str(i).zfill(3) + f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw'
+        time.sleep(1)
         img.capture_image2(filepath)
-        
-        # return to zero + capture
-        i += 1
-        pos = stage.move_to([0,0,0])
-        filepath = folder_path + (str(i).zfill(3) +
-            f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw')
-        img.capture_image2(filepath)
+        i+=1
+    
+    # return to zero + capture
+    pos = [0,0,0]
+    stage(f"stage.move_to([0,0,0])")
+    filepath = save_path + str(i).zfill(3) + f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw'
+    time.sleep(1)
+    img.capture_image2(filepath)
+    i+=1
 
 
 folder_path = '/media/marcus1/large_chungus/data_collection/'
 
 #generate movement pattern
-distances_um = [5,10,50,100,250]
+#distances_um = [5,10,50,250,1000,4500]
+distances_um = [4500]
 distances_steps = [i*2 for i in distances_um]
 positions = generate_positions(distances_steps)
 
 if __name__ == '__main__':
     start_time = int(time.time())
     # start the device
-    stage = usb.find_usb_device()
-    stage.zero()
+    stage = usb.find_usb_device(False)
+    stage("stage.zero(True)")
     move_collect(positions,folder_path,backlash=50)
     stage.close()
     end_time = int(time.time())

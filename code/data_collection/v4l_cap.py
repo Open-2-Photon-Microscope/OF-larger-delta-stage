@@ -4,7 +4,6 @@ import glob
 
 def capture_image2(filepath,opt=0):
     devices = sorted(glob.glob('/dev/video*'))
-    print(devices)
     # Open the camera device
     for dev in devices:
         try:
@@ -22,7 +21,7 @@ def capture_image2(filepath,opt=0):
 
 if __name__ == '__main__':
     import time
-    img_folder = '/home/marcus1/Documents/data_collection/'
+    img_folder = '/media/marcus1/large_chungus/data_collection/'
     for i in range(10):
         capture_image2(img_folder+str(i)+'.raw')
         time.sleep(0.1)
