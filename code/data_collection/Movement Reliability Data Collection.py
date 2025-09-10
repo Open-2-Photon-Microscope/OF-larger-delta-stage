@@ -28,13 +28,16 @@ def move_collect(positions, folder_path, backlash, i=0,rest=10):
     '''
     save_path = folder_path + f'rep_data_backlash{backlash}_{datetime.today()}/'
     os.makedirs(save_path, exist_ok=True)
+
     for position in positions:
-        #reset_usb_device.reset_usb_device()
+        #make new usb device
+        stage = usb.find_usb_device(False)
+        
         # initial image
         pos = [0,0,0]
-        stage(f"stage.move_to({pos})")
+        stage("stage.zero(True)")
         filepath = save_path + str(i).zfill(3) + f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw'
-        time.sleep(1)
+        time.sleep(rest)
         img.capture_image2(filepath)
         i += 1
 
@@ -45,34 +48,40 @@ def move_collect(positions, folder_path, backlash, i=0,rest=10):
         #capture image
         #names to follow the format nnn_x?_y?_z?.raw
         filepath = save_path + str(i).zfill(3) + f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw'
-        time.sleep(1)
         img.capture_image2(filepath)
         i+=1
     
-    # return to zero + capture
-    pos = [0,0,0]
-    stage(f"stage.move_to([0,0,0])")
-    filepath = save_path + str(i).zfill(3) + f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw'
-    time.sleep(1)
-    img.capture_image2(filepath)
-    i+=1
+        # return to zero + capture
+        pos = [0,0,0]
+        stage(f"stage.move_to([0,0,0])")
+        filepath = save_path + str(i).zfill(3) + f'_x{pos[0]}_y{pos[1]}_z{pos[2]}.raw'
+        time.sleep(rest)
+        img.capture_image2(filepath)
+        i+=1
+        stage.close()
+    return i
 
 
 folder_path = '/media/marcus1/large_chungus/data_collection/'
 
 #generate movement pattern
-#distances_um = [5,10,50,250,1000,4500]
-distances_um = [4500]
+distances_um = [5,10,50,250,1000,4500]
+#distances_um = [4500]
 distances_steps = [i*2 for i in distances_um]
 positions = generate_positions(distances_steps)
 
+reps = 50
+
 if __name__ == '__main__':
     start_time = int(time.time())
-    # start the device
-    stage = usb.find_usb_device(False)
-    stage("stage.zero(True)")
-    move_collect(positions,folder_path,backlash=50)
-    stage.close()
-    end_time = int(time.time())
-    time_taken = end_time-start_time
-    print(f'That took {time_taken} seconds')
+    for rep in range(reps):
+        print(f'rep {rep} of {reps}')
+        
+        # start the device
+        
+        #stage("stage.zero(True)")
+        move_collect(positions,folder_path,backlash=50,rest=10)
+        #stage.close()
+        end_time = int(time.time())
+        time_taken = end_time-start_time
+        print(f'That took {time_taken} seconds')
